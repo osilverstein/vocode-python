@@ -1,3 +1,4 @@
+from re import template
 from typing import Optional
 from twilio.rest import Client
 
@@ -32,9 +33,7 @@ class TwilioClient(BaseTelephonyClient):
         record: bool = False,
         digits: Optional[str] = None,
     ) -> str:
-        twiml = self.templater.get_connection_twiml(
-            base_url=self.base_url, call_id=conversation_id
-        )
+        twiml = self.get_connection_twiml(conversation_id=conversation_id)
         twilio_call = self.twilio_client.calls.create(
             twiml=twiml.body.decode("utf-8"),
             to=to_phone,
@@ -43,6 +42,11 @@ class TwilioClient(BaseTelephonyClient):
             record=record,
         )
         return twilio_call.sid
+
+    def get_connection_twiml(self, conversation_id: str):
+        return self.templater.get_connection_twiml(
+            base_url=self.base_url, call_id=conversation_id
+        )
 
     def end_call(self, twilio_sid):
         response = self.twilio_client.calls(twilio_sid).update(status="completed")
