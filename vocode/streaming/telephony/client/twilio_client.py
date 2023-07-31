@@ -52,7 +52,7 @@ class TwilioClient(BaseTelephonyClient):
             base_url=self.base_url, call_id=conversation_id
         )
 
-    def end_call(self, twilio_sid):
+    async def end_call(self, twilio_sid):
         logging.info("I am ending the call now within the twilio client code")
         current_call = self.twilio_client.calls(twilio_sid).fetch()
 
